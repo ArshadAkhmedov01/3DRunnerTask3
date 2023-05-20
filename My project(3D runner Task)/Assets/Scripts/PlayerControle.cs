@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using DG.Tweening;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -6,13 +7,16 @@ public class PlayerControle : MonoBehaviour
 {
     [SerializeField] float speed;
     private float moveSpeed = 2f;
-    private float coinCount=0f;
+    private float coinCount = 0f;
 
     private Rigidbody _rb;
+
+    [SerializeField] Animator anime;
 
     void Start()
     {
         _rb = GetComponent<Rigidbody>();
+        anime = GetComponent<Animator>();
     }
 
     void Update()
@@ -28,22 +32,32 @@ public class PlayerControle : MonoBehaviour
 
         if (Input.GetKey(KeyCode.Space))
         {
-            _rb.AddForce(new Vector3(0f, 5f, 0f)* 5 * Time.deltaTime, ForceMode.Impulse);
+            _rb.AddForce(new Vector3(0f, 5f, 0f) * 5 * Time.deltaTime, ForceMode.Impulse);
         }
-        
-        
 
 
 
     }
-    private void OnCollisionEnter(Collision collision)
+
+    private void OnTriggerEnter(Collider other)
     {
-        if(collision.gameObject.CompareTag("Coin"))
+        if (other.CompareTag("Finish"))
+        {
+            anime.SetTrigger("Finish");
+        }
+
+
+        if (other.CompareTag("Coin"))
         {
 
-            Destroy(collision.gameObject);
+            Destroy(other.gameObject);
             coinCount++;
             Debug.Log(coinCount);
+
+            transform.DOScale(transform.localScale * 1.3f, 0.3f);
         }
     }
+
+
+
 }
